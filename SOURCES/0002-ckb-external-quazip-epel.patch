@@ -54,15 +54,3 @@ diff -up ckb-0.2.5/src/ckb/ckb.pro.external-quazip ckb-0.2.5/src/ckb/ckb.pro
      kbfirmware.h \
      fwupgradedialog.h \
      autorun.h \
-diff -up ckb-0.2.5/src/ckb/kbfirmware.cpp.external-quazip ckb-0.2.5/src/ckb/kbfirmware.cpp
---- ckb-0.2.5/src/ckb/kbfirmware.cpp.external-quazip	2016-04-13 23:33:43.308125528 +0200
-+++ ckb-0.2.5/src/ckb/kbfirmware.cpp	2016-04-13 23:34:08.119825371 +0200
-@@ -1,7 +1,7 @@
- #include "kbfirmware.h"
- #include "kbmanager.h"
--#include "quazip/quazip.h"
--#include "quazip/quazipfile.h"
-+#include "quazip5/quazip.h"
-+#include "quazip5/quazipfile.h"
- #include <QDateTime>
-#include <QDebug>
