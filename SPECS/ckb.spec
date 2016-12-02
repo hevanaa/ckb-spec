@@ -9,8 +9,8 @@ Source0:        https://github.com/ccMSC/ckb/archive/v%{version}.tar.gz#/%{name}
 
 # Upstream ships third party libraries
 Patch0:         0001-ckb-external-quazip.patch
-# There	is no qt5 of quazip in	Epel
-Patch1:         0002-ckb-use-var-run.patch
+Patch1:         0002-ckb-external-quazip-epel.patch
+Patch2:         0003-ckb-use-var-run.patch
 
 # Upstream provides none of the following files
 Source1:        ckb.appdata.xml
@@ -23,11 +23,11 @@ BuildRequires: quazip-qt5-devel
 %if 0%{?rhel}
 BuildRequires: 	quazip-devel
 %endif
-BuildRequires:  libgudev-devel
 BuildRequires:  libappindicator-devel
 BuildRequires:  systemd-devel
 BuildRequires:  zlib-devel
 BuildRequires:  desktop-file-utils
+
 %{?systemd_requires}
 
 Requires:       qt5-qtbase >= 5.2.0
@@ -41,7 +41,10 @@ much of the same functionality, including full RGB animations.
 %prep
 %setup -q -n ckb
 %patch0 -p1
+%if 0%{?rhel}
 %patch1 -p1
+%endif
+%patch2 -p1
 sed -e 's|QApplication::applicationDirPath()|"%{_libexecdir}/"|' -i src/ckb/animscript.cpp
 sed -e '/^ExecStart/cExecStart=%{_libexecdir}/ckb-daemon' -i service/systemd/ckb-daemon.service
 
