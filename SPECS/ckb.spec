@@ -40,7 +40,9 @@ much of the same functionality, including full RGB animations.
 
 %prep
 %setup -q -n ckb
+%if 0%{?fedora}
 %patch0 -p1
+%endif
 %if 0%{?rhel}
 %patch1 -p1
 %endif
