@@ -1,15 +1,17 @@
 Name:           ckb
-Version:        0.2.6
-Release:        0.1%{?dist}
+Version:        0.2.7
+Release:        0.1.20170120git89e8750%{?dist}
 Summary:        Corsair RGB keyboard driver for Linux and OS X
 Group:          Applications/System
 License:        GPLv2
-URL:            https://github.com/ccMSC/ckb
-Source0:        https://github.com/ccMSC/ckb/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+URL:            https://github.com/mattanger/ckb-next
+Source0:        https://github.com/mattanger/ckb-next/archive/master.tar.gz#/%{name}-%{version}.tar.gz
 
 # Upstream ships third party libraries
 Patch0:         0001-ckb-external-quazip.patch
+# There is no qt5 of quazip in Epel
 Patch1:         0002-ckb-external-quazip-epel.patch
+# Use /var/run
 Patch2:         0003-ckb-use-var-run.patch
 
 # Upstream provides none of the following files
@@ -19,15 +21,17 @@ Source2:        ckb.1
 BuildRequires:  qt5-qtbase-devel >= 5.2.0
 %if 0%{?fedora}
 BuildRequires: quazip-qt5-devel
+BuildRequires:  libgudev-devel
 %endif
 %if 0%{?rhel}
 BuildRequires: 	quazip-devel
+BuildRequires:  libgudev1-devel
 %endif
 BuildRequires:  libappindicator-devel
 BuildRequires:  systemd-devel
 BuildRequires:  zlib-devel
 BuildRequires:  desktop-file-utils
-
+BuildRequires:  libappstream-glib
 %{?systemd_requires}
 
 Requires:       qt5-qtbase >= 5.2.0
@@ -39,7 +43,7 @@ systems. This project is currently a work in progress, but it already supports
 much of the same functionality, including full RGB animations.
 
 %prep
-%setup -q -n ckb
+%setup -q -n ckb-next-master
 %if 0%{?fedora}
 %patch0 -p1
 %endif
