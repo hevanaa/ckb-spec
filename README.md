@@ -1,7 +1,8 @@
 # ckb-spec
 spec file for building Fedora rpm of ckb
 
-ckb driver source at https://github.com/ccMSC/ckb
+ckb source at https://github.com/mattanger/ckb-next
+(old source at https://github.com/ccMSC/ckb)
 
 Fedora and CentOS rpm repository at https://copr.fedorainfracloud.org/coprs/johanh/ckb/
 
