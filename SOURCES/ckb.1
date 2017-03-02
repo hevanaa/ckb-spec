@@ -17,21 +17,24 @@
 
 .SH NAME
 
-ckb \- Keyboard driver for Corsair RGB keyboards and mice.
+ckb \- User interface for ckb-next driver for Corsair RGB keyboards and mice.
 
 .SH DESCRIPTION
 
-\fBckb\fP is an open-source driver for Corsair keyboards and mice. It aims to
-bring the features of their proprietary CUE software to the Linux and Mac
-operating systems. This project is currently a work in progress, but it already
-supports much of the same functionality, including full RGB animations.
+\fBckb\fP is a user interface for the ckb-next open-source driver for Corsair
+keyboards and mice. It aims to bring the features of their proprietary CUE
+software to the Linux and Mac operating systems. This project is currently a
+work in progress, but it already supports much of the same functionality,
+including full RGB animations.
 
 
-\fBckb\fP supports the following keyboards:
+\fBckb-next\fP supports the following keyboards:
 
  - K65 RGB
  - K70
  - K70 RGB
+ - K70 LUX
+ - K70 LUX RGB
  - K95*
  - K95 RGB
  - Strafe
@@ -42,24 +45,29 @@ supports much of the same functionality, including full RGB animations.
 Mice:
 
  - M65 RGB
+ - M65 PRO RGB
  - Sabre RGB
  - Scimitar RGB
 
 .SH OPTIONS
 
-This program does not accept command-line options.
+\fB\-v\fR|\-\-version         Displays version information.
+\fB\-h\fR|\-\-help            Displays this help.
+\fB\-B\fR|\-\-background      Starts in background, without displaying the main window.
+\fB\-c\fR|\-\-close           Causes already running instance (if any) to exit.
 
 .SH BUGS
 
-\fB<https://github.com/ccMSC/ckb/issues>\fP.
+\fB<https://github.com/mattanger/ckb-next/issues>\fP.
 
 .SH HOMEPAGE
 
-\fB<https://github.com/ccMSC/ckb>\fP
+\fB<https://github.com/mattanger/ckb-next>\fP
 
 .SH AUTHORS
 
-MSC <qccmsc@gmail.com>
+MSC https://github.com/ccMSC (original ckb project)
+mattanger https://github.com/mattanger et al. (ckb-next)
 
 .PP
 

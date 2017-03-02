@@ -1,6 +1,6 @@
-Name:           ckb
+Name:           ckb-next
 Version:        0.2.7
-Release:        0.1.20170120git89e8750%{?dist}
+Release:        0.3.20170219gitb59d179%{?dist}
 Summary:        Corsair RGB keyboard driver for Linux and OS X
 Group:          Applications/System
 License:        GPLv2
@@ -35,12 +35,13 @@ BuildRequires:  libappstream-glib
 %{?systemd_requires}
 
 Requires:       qt5-qtbase >= 5.2.0
+Obsoletes:      ckb
 
 %description
-ckb is an open-source driver for Corsair keyboards and mice. It aims to bring
-the features of their proprietary CUE software to the Linux and Mac operating
-systems. This project is currently a work in progress, but it already supports
-much of the same functionality, including full RGB animations.
+ckb-next is an open-source driver for Corsair keyboards and mice. It aims to
+bring the features of their proprietary CUE software to the Linux and Mac
+operating systems. This project is currently a work in progress, but it already
+supports much of the same functionality, including full RGB animations.
 
 %prep
 %setup -q -n ckb-next-master
@@ -112,6 +113,8 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_mandir}/man1/ckb.1*
 
 %changelog
+* Thu Mar 2 2017 Johan Heikkila <johan.heikkila@gmail.com>
+- Changed package name to ckb-next
 * Thu Dec 1 2016 Johan Heikkila <johan.heikkila@gmail.com>
 - Created spec file for Fedora based on the Suse spec file
 - added appdata file
