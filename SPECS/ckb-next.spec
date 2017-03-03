@@ -1,6 +1,6 @@
 Name:           ckb-next
 Version:        0.2.7
-Release:        0.5.20170219gitb59d179%{?dist}
+Release:        0.6.20170219gitb59d179%{?dist}
 Summary:        Corsair RGB keyboard driver for Linux and OS X
 Group:          Applications/System
 License:        GPLv2
@@ -76,7 +76,11 @@ install -Dpm 0644 %{SOURCE2} %{buildroot}%{_mandir}/man1/ckb.1
 
 %post
 %systemd_post ckb-daemon.service
-touch --no-create %{_datadir}/icons/hicolor >&/dev/null || :
+if [ $1 -eq 1 ]; then
+    # starting daemon also at install
+    systemctl start ckb-daemon.service >/dev/null 2>&1 || :
+    touch --no-create %{_datadir}/icons/hicolor >&/dev/null || :
+fi
 
 %preun
 %systemd_preun ckb-daemon.service
