@@ -1,6 +1,6 @@
 Name:           ckb-next
 Version:        0.2.7
-Release:        0.3.20170219gitb59d179%{?dist}
+Release:        0.4.20170219gitb59d179%{?dist}
 Summary:        Corsair RGB keyboard driver for Linux and OS X
 Group:          Applications/System
 License:        GPLv2
@@ -11,12 +11,11 @@ Source0:        https://github.com/mattanger/ckb-next/archive/master.tar.gz#/%{n
 Patch0:         0001-ckb-external-quazip.patch
 # There is no qt5 of quazip in Epel
 Patch1:         0002-ckb-external-quazip-epel.patch
-# Use /var/run
-Patch2:         0003-ckb-use-var-run.patch
 
 # Upstream provides none of the following files
 Source1:        ckb.appdata.xml
 Source2:        ckb.1
+Source3:        99-ckb-next.preset
 
 BuildRequires:  qt5-qtbase-devel >= 5.2.0
 %if 0%{?fedora}
@@ -24,7 +23,7 @@ BuildRequires: quazip-qt5-devel
 BuildRequires:  libgudev-devel
 %endif
 %if 0%{?rhel}
-BuildRequires: 	quazip-devel
+BuildRequires:  quazip-devel
 BuildRequires:  libgudev1-devel
 %endif
 BuildRequires:  libappindicator-devel
@@ -51,8 +50,9 @@ supports much of the same functionality, including full RGB animations.
 %if 0%{?rhel}
 %patch1 -p1
 %endif
-%patch2 -p1
-sed -e 's|QApplication::applicationDirPath()|"%{_libexecdir}/"|' -i src/ckb/animscript.cpp
+# Correct dir for animations
+sed -e 's|QApplication::applicationDirPath()|"%{_libdir}/"|' -i src/ckb/animscript.cpp
+# Fedora uses /usr/libexec for daemons
 sed -e '/^ExecStart/cExecStart=%{_libexecdir}/ckb-daemon' -i service/systemd/ckb-daemon.service
 
 %build
@@ -62,13 +62,12 @@ make %{?_smp_mflags}
 %install
 install -D -m 755 bin/ckb %{buildroot}%{_bindir}/ckb
 install -D -m 755 bin/ckb-daemon %{buildroot}%{_libexecdir}/ckb-daemon
-install -d %{buildroot}%{_libexecdir}/ckb-animations
-install -m 755 bin/ckb-animations/* %{buildroot}%{_libexecdir}/ckb-animations
+install -d %{buildroot}%{_libdir}/ckb-animations
+install -m 755 bin/ckb-animations/* %{buildroot}%{_libdir}/ckb-animations
 install -m 644 -D usr/ckb.png %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/ckb.png
+install -Dpm 0644 %{SOURCE3} %{buildroot}/%{_presetdir}/99-ckb-next.preset
 install -m 644 -D service/systemd/ckb-daemon.service %{buildroot}%{_unitdir}/ckb-daemon.service
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications usr/ckb.desktop
-mkdir %{buildroot}%{_sbindir}
-ln -sf service %{buildroot}%{_sbindir}/rcckb-daemon
 install -Dpm 0644                                                             \
 %{SOURCE1} %{buildroot}%{_datadir}/appdata/ckb.appdata.xml
 appstream-util                                                                \
@@ -76,12 +75,7 @@ validate-relax --nonet %{buildroot}%{_datadir}/appdata/ckb.appdata.xml
 install -Dpm 0644 %{SOURCE2} %{buildroot}%{_mandir}/man1/ckb.1
 
 %post
-# not in preset
-if [  $1 == 1 ]
-then
-   systemctl enable ckb-daemon.service
-   systemctl start ckb-daemon
-fi
+%systemd_post ckb-daemon.service
 touch --no-create %{_datadir}/icons/hicolor >&/dev/null || :
 
 %preun
@@ -103,16 +97,18 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %license LICENSE
 %doc BUILD.md DAEMON.md FIRMWARE README.md
 %{_bindir}/ckb
-%{_sbindir}/rcckb-daemon
 %{_libexecdir}/ckb-daemon
-%{_libexecdir}/ckb-animations
+%{_libdir}/ckb-animations
 %{_unitdir}/ckb-daemon.service
+%{_presetdir}/99-ckb-next.preset
 %{_datadir}/applications/ckb.desktop
 %{_datadir}/appdata/ckb.appdata.xml
 %{_datadir}/icons/hicolor/*/apps/ckb.png
 %{_mandir}/man1/ckb.1*
 
 %changelog
+* Fri Mar 3 2017 Johan Heikkila <johan.heikkila@gmail.com>
+- Added systemd preset
 * Thu Mar 2 2017 Johan Heikkila <johan.heikkila@gmail.com>
 - Changed package name to ckb-next
 * Thu Dec 1 2016 Johan Heikkila <johan.heikkila@gmail.com>
