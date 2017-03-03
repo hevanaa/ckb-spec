@@ -1,6 +1,6 @@
 Name:           ckb-next
 Version:        0.2.7
-Release:        0.4.20170219gitb59d179%{?dist}
+Release:        0.5.20170219gitb59d179%{?dist}
 Summary:        Corsair RGB keyboard driver for Linux and OS X
 Group:          Applications/System
 License:        GPLv2
