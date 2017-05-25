@@ -1,6 +1,6 @@
 Name:           ckb-next
-Version:        0.2.7
-Release:        0.6.20170219gitb59d179%{?dist}
+Version:        0.2.8
+Release:        0.2.20170525gite54c911%{?dist}
 Summary:        Corsair RGB keyboard driver for Linux and OS X
 Group:          Applications/System
 License:        GPLv2
@@ -51,7 +51,7 @@ supports much of the same functionality, including full RGB animations.
 %patch1 -p1
 %endif
 # Correct dir for animations
-sed -e 's|QApplication::applicationDirPath()|"%{_libdir}/"|' -i src/ckb/animscript.cpp
+sed -e 's|"/usr/lib"|"%{_libdir}"|' -i src/ckb/animscript.cpp
 # Fedora uses /usr/libexec for daemons
 sed -e '/^ExecStart/cExecStart=%{_libexecdir}/ckb-daemon' -i service/systemd/ckb-daemon.service
 
@@ -111,6 +111,10 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_mandir}/man1/ckb.1*
 
 %changelog
+* Thu May 25 2017 Johan Heikkila <johan.heikkila@gmail.com>
+- Fix animation path. Update to e54c911
+* Thu May 18 2017 Johan Heikkila <johan.heikkila@gmail.com>
+- Update to 0.2.8 git 5a34841
 * Fri Mar 3 2017 Johan Heikkila <johan.heikkila@gmail.com>
 - Added systemd preset
 * Thu Mar 2 2017 Johan Heikkila <johan.heikkila@gmail.com>
