@@ -1,6 +1,6 @@
 Name:           ckb-next
 Version:        0.2.8
-Release:        0.2.20170525gite54c911%{?dist}
+Release:        0.6.20170820git6af2773%{?dist}
 Summary:        Corsair RGB keyboard driver for Linux and OS X
 Group:          Applications/System
 License:        GPLv2
@@ -11,6 +11,8 @@ Source0:        https://github.com/mattanger/ckb-next/archive/master.tar.gz#/%{n
 Patch0:         0001-ckb-external-quazip.patch
 # There is no qt5 of quazip in Epel
 Patch1:         0002-ckb-external-quazip-epel.patch
+# Workaround for color changer freeze
+Patch2:         0003-ckb-color-freeze-fix.patch
 
 # Upstream provides none of the following files
 Source1:        ckb.appdata.xml
@@ -34,6 +36,7 @@ BuildRequires:  libappstream-glib
 %{?systemd_requires}
 
 Requires:       qt5-qtbase >= 5.2.0
+Requires:       qt5ct
 Obsoletes:      ckb
 
 %description
@@ -50,6 +53,7 @@ supports much of the same functionality, including full RGB animations.
 %if 0%{?rhel}
 %patch1 -p1
 %endif
+%patch2 -p1
 # Correct dir for animations
 sed -e 's|"/usr/lib"|"%{_libdir}"|' -i src/ckb/animscript.cpp
 # Fedora uses /usr/libexec for daemons
@@ -60,6 +64,7 @@ qmake-qt5
 make %{?_smp_mflags}
 
 %install
+install -m 644 -D etc/profile.d/ckb-next.sh %{buildroot}%{_sysconfdir}/profile.d/ckb-next.sh
 install -D -m 755 bin/ckb %{buildroot}%{_bindir}/ckb
 install -D -m 755 bin/ckb-daemon %{buildroot}%{_libexecdir}/ckb-daemon
 install -d %{buildroot}%{_libdir}/ckb-animations
@@ -100,6 +105,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %defattr(-,root,root)
 %license LICENSE
 %doc BUILD.md DAEMON.md FIRMWARE README.md
+%{_sysconfdir}/profile.d/ckb-next.sh
 %{_bindir}/ckb
 %{_libexecdir}/ckb-daemon
 %{_libdir}/ckb-animations
@@ -111,15 +117,29 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_mandir}/man1/ckb.1*
 
 %changelog
-* Thu May 25 2017 Johan Heikkila <johan.heikkila@gmail.com>
-- Fix animation path. Update to e54c911
-* Thu May 18 2017 Johan Heikkila <johan.heikkila@gmail.com>
-- Update to 0.2.8 git 5a34841
-* Fri Mar 3 2017 Johan Heikkila <johan.heikkila@gmail.com>
-- Added systemd preset
-* Thu Mar 2 2017 Johan Heikkila <johan.heikkila@gmail.com>
-- Changed package name to ckb-next
-* Thu Dec 1 2016 Johan Heikkila <johan.heikkila@gmail.com>
+* Sun Aug 20 2017 Johan Heikkila <johan.heikkila@gmail.com> - 0.2.8:0.6.20170820git6af2773
+- Update to latest snapshot.
+* Wed Jul 26 2017 Johan Heikkila <johan.heikkila@gmail.com> - 0.2.8:0.5.20170726git9dc8216
+- Update to latest snapshot.
+- Color change freeze workaround by requiring qt5ct and adding to environment.
+* Fri Jul 07 2017 Johan Heikkila <johan.heikkila@gmail.com> - 0.2.8:0.4.20170707git1331253
+- Update to latest snapshot.
+* Fri Jun 23 2017 Johan Heikkila <johan.heikkila@gmail.com> - 0.2.8:0.3.20170621gitae7346b
+- Update to latest snapshot.
+* Thu May 25 2017 Johan Heikkila <johan.heikkila@gmail.com> - 0.2.8:0.2.20170525gite54c911
+- Fix animation path.
+- Update to latest snapshot.
+* Thu May 18 2017 Johan Heikkila <johan.heikkila@gmail.com> - 0.2.8:0.1.20170518git5a34841
+- Update to 0.2.8 latest snapshot.
+* Fri Apr 14 2017 Johan Heikkila <johan.heikkila@gmail.com> - 0.2.7:0.7.20170414git565add5
+- Added systemd preset.
+- Update to latest snapshot.
+* Thu Feb 19 2017 Johan Heikkila <johan.heikkila@gmail.com> - 0.2.7:0.6.20170219gitb59d179
+- Changed package name to ckb-next.
+- Update to latest snapshot.
+* Sun Jan 22 2017 Johan Heikkila <johan.heikkila@gmail.com> - 0.2.7:0.2.20170120git89e8750
+- Update to latest snapshot.
+* Thu Dec 1 2016 Johan Heikkila <johan.heikkila@gmail.com> - 0.2.6:0.1
 - Created spec file for Fedora based on the Suse spec file
 - added appdata file
 - added man page
