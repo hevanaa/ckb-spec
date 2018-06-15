@@ -75,7 +75,7 @@ install -D -m 755 build/bin/wave %{buildroot}%{_libdir}/ckb-next-animations/wave
 install -D -m 755 build/lib/libKissFFT.so %{buildroot}%{_libdir}/libKissFFT.so
 install -m 644 -D build/src/gui/ckb-next.png %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/ckb-next.png
 install -Dpm 0644 %{SOURCE3} %{buildroot}/%{_presetdir}/99-ckb-next.preset
-install -m 644 -D build/src/daemon/service/ckb-next-daemon.service %{buildroot}%{_unitdir}/ckb-next-daemon.service
+install -m 644 -D linux/systemd/ckb-next-daemon.service.in %{buildroot}%{_unitdir}/ckb-next-daemon.service
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications build/src/gui/ckb-next.desktop
 install -Dpm 0644                                                             \
 %{SOURCE1} %{buildroot}%{_datadir}/appdata/ckb-next.appdata.xml
@@ -124,7 +124,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_mandir}/man1/ckb-next.1*
 
 %changelog
-* Thu May 03 2018 Johan Heikkila <johan.heikkila@gmail.com> - 0.3.0:1
+* Fri Jun 15 2018 Johan Heikkila <johan.heikkila@gmail.com> - 0.3.0:1
 - Update to 0.3.0 release
 - set QT_QPA_PLATFORMTHEME only for binary
 * Mon Jan 22 2018 Johan Heikkila <johan.heikkila@gmail.com> - 0.2.9:0.1.20180122git2316518
