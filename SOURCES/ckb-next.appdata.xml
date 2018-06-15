@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright (c) 2014-2016 MSC Contact: qccmsc@gmail.com -->
 <application>
-  <id type="desktop">ckb.desktop</id>
+  <id type="desktop">ckb-next.desktop</id>
   <name>ckb-next</name>
   <summary>RGB Driver for Linux and OS X</summary>
   <summary xml:lang="sv">RGB drivrutin för Linux och OS X</summary>
@@ -27,6 +27,6 @@
   <screenshots>
     <screenshot type="default" width="1000" height="750">https://camo.githubusercontent.com/8c6239eb67eb172baa34864f4759b111b2c731f7/68747470733a2f2f692e696d6775722e636f6d2f7a4d4b396a4f502e706e67</screenshot>
   </screenshots>
-  <url type="homepage">https://github.com/mattanger/ckb-next</url>
+  <url type="homepage">https://github.com/ckb-next/ckb-next</url>
   <updatecontact>johan.heikkila@gmail.com</updatecontact>
 </application>

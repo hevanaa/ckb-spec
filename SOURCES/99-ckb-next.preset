@@ -1,1 +1,1 @@
-enable ckb-daemon.service
+enable ckb-next-daemon.service
