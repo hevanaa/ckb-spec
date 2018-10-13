@@ -1,7 +1,7 @@
 %undefine _debugsource_packages
 
 Name:           ckb-next
-Version:        0.3.0
+Version:        0.3.2
 Release:        1%{?dist}
 Summary:        Corsair RGB keyboard driver for Linux and OS X
 Group:          Applications/System
@@ -14,7 +14,12 @@ Source1:        ckb-next.appdata.xml
 Source2:        ckb-next.1
 Source3:        99-ckb-next.preset
 
+%if 0%{?fedora}
 BuildRequires:  cmake
+%endif
+%if 0%{?rhel}
+BuildRequires:  cmake3
+%endif
 BuildRequires:  qt5-qtbase-devel >= 5.2.0
 %if 0%{?fedora}
 BuildRequires:  quazip-qt5-devel
@@ -30,6 +35,7 @@ BuildRequires:  pulseaudio-libs-devel
 BuildRequires:  zlib-devel
 BuildRequires:  desktop-file-utils
 BuildRequires:  libappstream-glib
+BuildRequires:  ImageMagick
 %{?systemd_requires}
 
 Requires:       qt5-qtbase >= 5.2.0
@@ -44,36 +50,42 @@ supports much of the same functionality, including full RGB animations.
 
 %prep
 %setup -q -n ckb-next-%{version}
-# Correct dir for animations
-sed -e 's|"/usr/lib"|"%{_libdir}"|' -i src/gui/animscript.cpp
 # Fedora uses /usr/libexec for daemons
 sed -e '/^ExecStart/cExecStart=%{_libexecdir}/ckb-next-daemon' -i linux/systemd/ckb-next-daemon.service.in
 
 %build
-%cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DSAFE_INSTALL=OFF -DSAFE_UNINSTALL=OFF
+%if 0%{?fedora}
+%cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DSAFE_INSTALL=OFF -DSAFE_UNINSTALL=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=%{_libexecdir} -DDISABLE_UPDATER=1
 %cmake --build build --target all -- -j build
+%endif
+%if 0%{?rhel}
+cmake3 -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DSAFE_INSTALL=OFF -DSAFE_UNINSTALL=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=%{_libexecdir} -DDISABLE_UPDATER=1
+cmake3 --build build --target all -- -j %{?_smp_mflags}
+%endif
 cd build
 %make_build
 cd ..
 
 # Color freeze fix
-sed -e 's|^Exec=/usr/bin/ckb-next|Exec=env QT_QPA_PLATFORMTHEME=qt5ct /usr/bin/ckb-next|' -i build/src/gui/ckb-next.desktop
+sed -e '/^Exec=/cExec=env QT_QPA_PLATFORMTHEME=qt5ct /usr/bin/ckb-next' -i build/src/gui/ckb-next.desktop
 
 %install
 install -m 644 -D linux/udev/99-ckb-daemon.rules %{buildroot}%{_udevrulesdir}/99-ckb-daemon.rules
 install -D -m 755 build/bin/ckb-next %{buildroot}%{_bindir}/ckb-next
 install -D -m 755 build/bin/ckb-next-daemon %{buildroot}%{_libexecdir}/ckb-next-daemon
-install -d %{buildroot}%{_libdir}/ckb-next-animations
-install -D -m 755 build/bin/gradient %{buildroot}%{_libdir}/ckb-next-animations/gradient
-install -D -m 755 build/bin/heat %{buildroot}%{_libdir}/ckb-next-animations/heat
-install -D -m 755 build/bin/mviz %{buildroot}%{_libdir}/ckb-next-animations/mviz
-install -D -m 755 build/bin/pinwheel %{buildroot}%{_libdir}/ckb-next-animations/pinwheel
-install -D -m 755 build/bin/rain %{buildroot}%{_libdir}/ckb-next-animations/rain
-install -D -m 755 build/bin/random %{buildroot}%{_libdir}/ckb-next-animations/random
-install -D -m 755 build/bin/ripple %{buildroot}%{_libdir}/ckb-next-animations/ripple
-install -D -m 755 build/bin/wave %{buildroot}%{_libdir}/ckb-next-animations/wave
-install -D -m 755 build/lib/libKissFFT.so %{buildroot}%{_libdir}/libKissFFT.so
+install -d %{buildroot}%{_libexecdir}/ckb-next-animations
+install -D -m 755 build/bin/gradient %{buildroot}%{_libexecdir}/ckb-next-animations/gradient
+install -D -m 755 build/bin/heat %{buildroot}%{_libexecdir}/ckb-next-animations/heat
+install -D -m 755 build/bin/mviz %{buildroot}%{_libexecdir}/ckb-next-animations/mviz
+install -D -m 755 build/bin/pinwheel %{buildroot}%{_libexecdir}/ckb-next-animations/pinwheel
+install -D -m 755 build/bin/rain %{buildroot}%{_libexecdir}/ckb-next-animations/rain
+install -D -m 755 build/bin/random %{buildroot}%{_libexecdir}/ckb-next-animations/random
+install -D -m 755 build/bin/ripple %{buildroot}%{_libexecdir}/ckb-next-animations/ripple
+install -D -m 755 build/bin/wave %{buildroot}%{_libexecdir}/ckb-next-animations/wave
 install -m 644 -D build/src/gui/ckb-next.png %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/ckb-next.png
+# CentOS doesn't like 512 px icons
+convert -resize 256x256 build/src/gui/ckb-next.png build/src/gui/ckb-next256.png
+install -m 644 -D build/src/gui/ckb-next256.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/ckb-next.png
 install -Dpm 0644 %{SOURCE3} %{buildroot}/%{_presetdir}/99-ckb-next.preset
 install -m 644 -D linux/systemd/ckb-next-daemon.service.in %{buildroot}%{_unitdir}/ckb-next-daemon.service
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications build/src/gui/ckb-next.desktop
@@ -110,12 +122,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %files
 %defattr(-,root,root)
 %license LICENSE
-%doc CHANGELOG.md FIRMWARE README.md ROADMAP.md
+%doc CHANGELOG.md FIRMWARE README.md
 %{_udevrulesdir}/*.rules
 %{_bindir}/ckb-next
 %{_libexecdir}/ckb-next-daemon
-%{_libdir}/libKissFFT.so
-%{_libdir}/ckb-next-animations
+%{_libexecdir}/ckb-next-animations
 %{_unitdir}/ckb-next-daemon.service
 %{_presetdir}/99-ckb-next.preset
 %{_datadir}/applications/ckb-next.desktop
@@ -124,6 +135,13 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_mandir}/man1/ckb-next.1*
 
 %changelog
+* Sat Oct 13 2018 Johan Heikkila <johan.heikkila@gmail.com> - 0.3.2:1
+- Update to 0.3.2 release
+* Sun Oct 7 2018 Johan Heikkila <johan.heikkila@gmail.com> - 0.3.1:1
+- Update to 0.3.1 release
+* Sat Jun 16 2018 Johan Heikkila <johan.heikkila@gmail.com> - 0.3.0:2
+- Fixed Epel build
+- Fixed animations dir
 * Fri Jun 15 2018 Johan Heikkila <johan.heikkila@gmail.com> - 0.3.0:1
 - Update to 0.3.0 release
 - set QT_QPA_PLATFORMTHEME only for binary
