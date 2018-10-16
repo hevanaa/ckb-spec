@@ -2,7 +2,7 @@
 
 Name:           ckb-next
 Version:        0.3.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Corsair RGB keyboard driver for Linux and OS X
 Group:          Applications/System
 License:        GPLv2
@@ -55,11 +55,11 @@ sed -e '/^ExecStart/cExecStart=%{_libexecdir}/ckb-next-daemon' -i linux/systemd/
 
 %build
 %if 0%{?fedora}
-%cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DSAFE_INSTALL=OFF -DSAFE_UNINSTALL=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=%{_libexecdir} -DDISABLE_UPDATER=1
+%cmake -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DSAFE_INSTALL=OFF -DSAFE_UNINSTALL=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=libexec -DDISABLE_UPDATER=1
 %cmake --build build --target all -- -j build
 %endif
 %if 0%{?rhel}
-cmake3 -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DSAFE_INSTALL=OFF -DSAFE_UNINSTALL=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=%{_libexecdir} -DDISABLE_UPDATER=1
+cmake3 -H. -Bbuild -DCMAKE_BUILD_TYPE=Release -DSAFE_INSTALL=OFF -DSAFE_UNINSTALL=OFF -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBEXECDIR=libexec -DDISABLE_UPDATER=1
 cmake3 --build build --target all -- -j %{?_smp_mflags}
 %endif
 cd build
@@ -135,6 +135,8 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_mandir}/man1/ckb-next.1*
 
 %changelog
+* Tue Oct 16 2018 Johan Heikkila <johan.heikkila@gmail.com> - 0.3.2:2
+- Fixed animations dir
 * Sat Oct 13 2018 Johan Heikkila <johan.heikkila@gmail.com> - 0.3.2:1
 - Update to 0.3.2 release
 * Sun Oct 7 2018 Johan Heikkila <johan.heikkila@gmail.com> - 0.3.1:1
